@@ -4,7 +4,7 @@ CREATE DATABASE trabalho_trio;
 
 USE trabalho_trio;
 
-CREATE TABLE idiomas(
+CREATE TABLE idiomas (
     id INT PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(40) NOT NULL,
     descricao TEXT
@@ -41,6 +41,18 @@ CREATE TABLE cursos (
     FOREIGN KEY (id_idioma) REFERENCES idiomas(id)
 );
 
+CREATE TABLE escola (
+    id_escola INT AUTO_INCREMENT PRIMARY KEY,
+    id_curso INT NOT NULL,
+    nome VARCHAR(100) NOT NULL,
+    cnpj CHAR(14) NOT NULL UNIQUE,
+    endereco VARCHAR(150),
+    telefone VARCHAR(20),
+    email VARCHAR(100),
+
+    FOREIGN KEY (id_curso) REFERENCES cursos(id_curso)
+);
+
 CREATE TABLE turmas (
     id_turma INT AUTO_INCREMENT PRIMARY KEY,
     id_professor INT NOT NULL,
@@ -63,16 +75,6 @@ CREATE TABLE matriculas (
 
     FOREIGN KEY (id_aluno) REFERENCES alunos(id_aluno),
     FOREIGN KEY (id_turma) REFERENCES turmas(id_turma)
-);
-
-CREATE TABLE frequencias (
-    id_frequencia INT AUTO_INCREMENT PRIMARY KEY,
-    id_matricula INT NOT NULL,
-    data_aula DATE NOT NULL,
-    presente BOOLEAN NOT NULL DEFAULT TRUE,
-    observacao VARCHAR(255),
-
-    FOREIGN KEY (id_matricula) REFERENCES matriculas(id_matricula)
 );
 
 INSERT INTO idiomas (nome, descricao) VALUES
@@ -103,6 +105,13 @@ INSERT INTO cursos (id_idioma, nome, nivel, carga_horaria, valor_mensalidade) VA
 (4, 'Alemao Basico', 1, 60, 260.00),
 (5, 'Italiano Intermediario', 2, 80, 240.00);
 
+INSERT INTO escola (id_curso, nome, cnpj, endereco, telefone, email) VALUES
+(1, 'Unidade Centro - Ingles', '11222333000181', 'Rua das Flores, 100 - Centro', '4732220001', 'centro@escolaidiomas.com'),
+(2, 'Unidade Norte - Espanhol', '22333444000162', 'Av. Brasil, 500 - Bairro Norte', '4732220002', 'norte@escolaidiomas.com'),
+(3, 'Unidade Sul - Frances', '33444555000143', 'Rua XV de Novembro, 320 - Sul', '4732220003', 'sul@escolaidiomas.com'),
+(4, 'Unidade Leste - Alemao', '44555666000124', 'Rua Sete de Setembro, 88 - Leste', '4732220004', 'leste@escolaidiomas.com'),
+(5, 'Unidade Oeste - Italiano', '55666777000105', 'Av. das Nacoes, 210 - Oeste', '4732220005', 'oeste@escolaidiomas.com');
+
 INSERT INTO turmas (id_professor, id_curso, nome, horario, data_inicio, data_fim, vagas_totais) VALUES
 (1, 1, 'Turma A - Manha', 'Seg/Qua 08:00-09:30', '2026-02-02', NULL, 20),
 (2, 2, 'Turma B - Noite', 'Ter/Qui 19:00-20:30', '2026-02-03', NULL, 15),
@@ -116,10 +125,3 @@ INSERT INTO matriculas (id_aluno, id_turma, data_matricula) VALUES
 (3, 3, '2026-02-02'),
 (4, 4, '2026-02-02'),
 (5, 5, '2026-02-03');
-
-INSERT INTO frequencias (id_matricula, data_aula, presente, observacao) VALUES
-(1, '2026-02-02', TRUE, NULL),
-(2, '2026-02-03', TRUE, NULL),
-(3, '2026-02-02', FALSE, 'Faltou por motivo de saude'),
-(4, '2026-02-03', TRUE, NULL),
-(5, '2026-02-02', TRUE, 'Chegou atrasado');
