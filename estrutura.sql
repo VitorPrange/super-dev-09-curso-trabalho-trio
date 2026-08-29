@@ -72,7 +72,7 @@ CREATE TABLE matriculas (
     id_aluno INT NOT NULL,
     id_turma INT NOT NULL,
     data_matricula DATE NOT NULL,
-    frequencia INT NPT NULL DEFAULT(0)
+    frequencia INT NOT NULL DEFAULT(0),
 
     FOREIGN KEY (id_aluno) REFERENCES alunos(id_aluno),
     FOREIGN KEY (id_turma) REFERENCES turmas(id_turma)
