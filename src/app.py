@@ -5,7 +5,7 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from src.controllers import matricula_controller
+from src.controllers import matricula_controller, escola_controller
 
 
 app = FastAPI(
@@ -15,6 +15,7 @@ app = FastAPI(
 )
 
 app.include_router(matricula_controller.router)
+app.include_router(escola_controller.router)
 
 
 if __name__ == "__main__":

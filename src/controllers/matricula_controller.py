@@ -30,7 +30,7 @@ def consultar_por_id(id: int):
     matricula = matricula_repository.consultar_por_id(id)
     
     if matricula is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Matricula não encontrado")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Matricula não encontrada")
 
     return matricula
 
@@ -40,10 +40,10 @@ def editar_matricula(id: int, matricula: MatriculaEditar):
     matricula_banco = matricula_repository.consultar_por_id(id)
 
     if matricula_banco is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Matricula não encontrado")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Matricula não encontrada")
 
     matricula_repository.editar_matricula(id, matricula)
     return {
-        "status": "ok"
+        "status": "OK"
     }
     

@@ -41,6 +41,18 @@ CREATE TABLE cursos (
     FOREIGN KEY (id_idioma) REFERENCES idiomas(id)
 );
 
+CREATE TABLE escola (
+    id_escola INT AUTO_INCREMENT PRIMARY KEY,
+    id_curso INT NOT NULL,
+    nome VARCHAR(100) NOT NULL,
+    cnpj CHAR(14) NOT NULL UNIQUE,
+    endereco VARCHAR(150),
+    telefone VARCHAR(20),
+    email VARCHAR(100),
+
+    FOREIGN KEY (id_curso) REFERENCES cursos(id_curso)
+);
+
 CREATE TABLE turmas (
     id_turma INT AUTO_INCREMENT PRIMARY KEY,
     id_professor INT NOT NULL,
@@ -50,7 +62,6 @@ CREATE TABLE turmas (
     data_inicio DATE NOT NULL,
     data_fim DATE,
     vagas_totais INT NOT NULL DEFAULT 20,
-
     FOREIGN KEY (id_professor) REFERENCES professores(id_professor),
     FOREIGN KEY (id_curso) REFERENCES cursos(id_curso)
 );
@@ -60,17 +71,8 @@ CREATE TABLE matriculas (
     id_aluno INT NOT NULL,
     id_turma INT NOT NULL,
     data_matricula DATE NOT NULL,
+    frequencia INT NOT NULL DEFAULT(0),
 
     FOREIGN KEY (id_aluno) REFERENCES alunos(id_aluno),
     FOREIGN KEY (id_turma) REFERENCES turmas(id_turma)
-);
-
-CREATE TABLE frequencias (
-    id_frequencia INT AUTO_INCREMENT PRIMARY KEY,
-    id_matricula INT NOT NULL,
-    data_aula DATE NOT NULL,
-    presente BOOLEAN NOT NULL DEFAULT TRUE,
-    observacao VARCHAR(255),
-
-    FOREIGN KEY (id_matricula) REFERENCES matriculas(id_matricula)
 );
