@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from src.controllers import idioma_controller
+from src.controllers import curso_controller, idioma_controller
 
 
 

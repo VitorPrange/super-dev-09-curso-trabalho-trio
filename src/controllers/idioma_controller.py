@@ -36,7 +36,7 @@ def consultar_por_id(id: int):
 def editar(id: int, idioma: IdiomaEditar):
     idioma_existente = idioma_repository.consultar_por_id(id)
     if idioma_existente is None:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Categoria não encontrada")
+        raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Idioma não encontrado")
     
     idioma_repository.editar(id, idioma)
     return {"status": "OK"}
