@@ -16,3 +16,4 @@ class IdiomaCadastro:
 class IdiomaEditar:
     nome: str
     descricao: str
+    

@@ -14,6 +14,7 @@ app = FastAPI(
 )
 
 app.include_router(idioma_controller.router)
+app.include_router(curso_controller.router)
 
 if __name__ == "__main__":
     import uvicorn
