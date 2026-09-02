@@ -54,3 +54,6 @@ def cadastrar(aluno: AlunoCadastro) -> Aluno:
         telefone=aluno.telefone,
         data_cadastro=aluno.data_cadastro
     )
+
+def editar(id: int, aluno: AlunoEditar):
+    pass
