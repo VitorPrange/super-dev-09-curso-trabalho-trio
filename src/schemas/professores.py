@@ -2,31 +2,31 @@ from dataclasses import dataclass
 from datetime import date
 
 @dataclass 
-class Aluno: 
-    id_aluno: int
+class Professor: 
+    id_professor: int
     nome: str
     cpf: str
-    data_nascimento: date
     email: str
     telefone: str
-    data_cadastro: date
+    formacao: str
+    data_contratacao: date
+
+@dataclass
+class ProfessorCadastro:
+    nome: str
+    cpf: str
+    email: str
+    telefone: str
+    formacao: str
+    data_contratacao: date
+    
 
 
 @dataclass
-class AlunoCadastro:
+class ProfessorEditar:
     nome: str
     cpf: str
-    data_nascimento: date
     email: str
     telefone: str
-    data_cadastro: date
-
-
-@dataclass
-class AlunoEditar:
-    nome: str
-    cpf: str
-    data_nascimento: date
-    email: str
-    telefone: str
-    data_cadastro: date
+    formacao: str
+    data_contratacao: date
