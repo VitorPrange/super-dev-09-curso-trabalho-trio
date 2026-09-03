@@ -16,7 +16,7 @@
  */
 
 // ---- Base configuration ----
-const API_BASE = 'http://127.0.0.1:80';
+const API_BASE = 'http://127.0.0.1:8000';
 
 // ---- Entity field definitions ----
 // Each entity defines its fields for table columns and form inputs.
