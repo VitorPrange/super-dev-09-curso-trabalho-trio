@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from src.controllers import curso_controller, idioma_controller
+from src.controllers import curso_controller, idioma_controller, turma_controller
 
 
 
@@ -15,6 +15,7 @@ app = FastAPI(
 
 app.include_router(idioma_controller.router)
 app.include_router(curso_controller.router)
+app.include_router(turma_controller.router)
 
 if __name__ == "__main__":
     import uvicorn

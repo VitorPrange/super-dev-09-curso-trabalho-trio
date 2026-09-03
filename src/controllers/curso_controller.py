@@ -39,4 +39,4 @@ def editar(id: int, curso: CursoEditar):
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Curso não encontrado")
 
     curso_repository.editar(id, curso)
-    return {"status": "OK"}
+    return {"status": "OK"} 

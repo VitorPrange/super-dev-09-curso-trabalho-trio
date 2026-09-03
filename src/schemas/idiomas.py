@@ -7,10 +7,12 @@ class Idioma:
     nome: str
     descricao: str
 
+
 @dataclass
 class IdiomaCadastro:
     nome: str
     descricao: str
+
 
 @dataclass
 class IdiomaEditar:
