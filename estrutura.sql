@@ -62,7 +62,6 @@ CREATE TABLE turmas (
     data_inicio DATE NOT NULL,
     data_fim DATE,
     vagas_totais INT NOT NULL DEFAULT 20,
-
     FOREIGN KEY (id_professor) REFERENCES professores(id_professor),
     FOREIGN KEY (id_curso) REFERENCES cursos(id_curso)
 );
