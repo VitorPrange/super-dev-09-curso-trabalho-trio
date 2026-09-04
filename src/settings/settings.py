@@ -22,9 +22,5 @@ class Settings:
 		self.app_host: str = os.getenv("APP_HOST")
 		self.app_port: str = os.getenv("APP_PORT")
 
-		# DEBUG
-		import sys
-		print(f"[DEBUG] Settings: host={self.db_host}, port={repr(self.db_port)}, user={self.db_user}, pass={repr(self.db_password)}, db={self.db_name}", file=sys.stderr)
-
 
 settings = Settings()

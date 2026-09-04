@@ -9,12 +9,7 @@ router = APIRouter()
 
 @router.get("/idiomas")
 def listar_idiomas():
-    try:
-        return idioma_repository.consultar_todos()
-    except Exception as e:
-        import sys
-        print(f"[ERROR] listar_idiomas: {type(e).__name__}: {e}", file=sys.stderr)
-        return {"error": f"{type(e).__name__}: {e}"}
+    return idioma_repository.consultar_todos()
 
 
 @router.post ("/idiomas")

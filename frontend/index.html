@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Escola de Idiomas · Secretaria</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232f5d50'/%3E%3Ctext x='32' y='44' font-size='34' text-anchor='middle' fill='%23e9eae2' font-family='Georgia,serif'%3E%E4%B8%96%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -33,9 +34,15 @@
 
   <main class="content">
     <header class="content-header">
-      <div>
-        <h1 id="section-title">—</h1>
-        <p class="section-sub" id="section-sub"></p>
+      <div class="header-title">
+        <span class="header-icon" id="section-icon" aria-hidden="true"></span>
+        <div>
+          <div class="title-row">
+            <h1 id="section-title">—</h1>
+            <span class="count-pill" id="section-count" hidden></span>
+          </div>
+          <p class="section-sub" id="section-sub"></p>
+        </div>
       </div>
       <button class="btn btn-primary" id="btn-new">+ Novo registro</button>
     </header>
@@ -51,10 +58,13 @@
         <tbody id="table-body"></tbody>
       </table>
       <div class="empty-state" id="empty-state" hidden>
+        <div class="empty-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5V19a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V8.5"/><path d="M2.5 8.5h19L19 4H5L2.5 8.5z"/><path d="M9.5 12.5a2.5 2.5 0 0 0 5 0"/></svg>
+        </div>
         <p id="empty-text"></p>
         <button class="btn btn-primary" id="btn-empty-new">Adicionar</button>
       </div>
-      <div class="loading-state" id="loading-state">Carregando registros…</div>
+      <div class="loading-state" id="loading-state"><span class="spinner" aria-hidden="true"></span><span>Carregando registros…</span></div>
     </div>
   </main>
 </div>

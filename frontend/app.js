@@ -5,6 +5,75 @@
 
 const DEFAULT_API_BASE = "http://127.0.0.1:8000";
 
+// ---------- ícones (SVG inline, herdam a cor via currentColor) ----------
+
+const ICONS = {
+  idiomas: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v10H8l-4 4V5z"/></svg>',
+  cursos: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5.5c2-1 5-1 9 1v12c-4-2-7-2-9-1v-12z"/><path d="M21 5.5c-2-1-5-1-9 1v12c4-2 7-2 9-1v-12z"/></svg>',
+  professores: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-4 3.1-6.5 7-6.5s7 2.5 7 6.5"/></svg>',
+  turmas: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="3"/><circle cx="16.5" cy="10" r="2.5"/><path d="M3.2 19c0-3.3 2.6-5.5 5.8-5.5s5.8 2.2 5.8 5.5"/><path d="M14.8 14.4c2.3.5 4 2.4 4 4.6"/></svg>',
+  alunos: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9l10-4.5L22 9l-10 4.5L2 9z"/><path d="M6 11.2V16c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5v-4.8"/><path d="M22 9v5.5"/></svg>',
+  matriculas: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4.5" width="14" height="16" rx="1.6"/><path d="M9 4.2h6a1 1 0 0 1 1 1v1.3H8V5.2a1 1 0 0 1 1-1z"/><path d="M8.5 13l2.2 2.2 4.8-4.2"/></svg>',
+  escola: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 4.5-9 4.5-9-4.5L12 3z"/><path d="M5.5 9.8V15c0 1.8 2.9 3.2 6.5 3.2s6.5-1.4 6.5-3.2V9.8"/><path d="M21 8v6.2"/></svg>',
+};
+
+// ---------- máscaras de campo ----------
+// `format`   -> transforma o texto digitado no valor exibido
+// `unmask`   -> transforma o valor exibido de volta no valor enviado à API
+// `maxLength`-> tamanho máximo do texto já mascarado
+
+const MASKS = {
+  cpf: {
+    maxLength: 14,
+    inputMode: "numeric",
+    format: (v) => v.replace(/\D/g, "").slice(0, 11)
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d{1,2})$/, "$1-$2"),
+    unmask: (v) => v.replace(/\D/g, ""),
+  },
+  cnpj: {
+    maxLength: 18,
+    inputMode: "numeric",
+    format: (v) => v.replace(/\D/g, "").slice(0, 14)
+      .replace(/(\d{2})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d)/, "$1/$2")
+      .replace(/(\d{4})(\d{1,2})$/, "$1-$2"),
+    unmask: (v) => v.replace(/\D/g, ""),
+  },
+  telefone: {
+    maxLength: 15,
+    inputMode: "numeric",
+    format: (v) => {
+      const digits = v.replace(/\D/g, "").slice(0, 11);
+      if (digits.length <= 10) {
+        return digits.replace(/(\d{2})(\d)/, "($1) $2").replace(/(\d{4})(\d{1,4})$/, "$1-$2");
+      }
+      return digits.replace(/(\d{2})(\d)/, "($1) $2").replace(/(\d{5})(\d{1,4})$/, "$1-$2");
+    },
+    unmask: (v) => v.replace(/\D/g, ""),
+  },
+  currency: {
+    maxLength: 18,
+    inputMode: "decimal",
+    format: (v) => {
+      let digits = v.replace(/\D/g, "").replace(/^0+(?=\d)/, "");
+      if (digits === "") digits = "0";
+      while (digits.length < 3) digits = "0" + digits;
+      const centsPart = digits.slice(-2);
+      const intPart = digits.slice(0, -2).replace(/^0+(?=\d)/, "") || "0";
+      const intFormatted = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      return `R$ ${intFormatted},${centsPart}`;
+    },
+    unmask: (v) => {
+      const digits = v.replace(/\D/g, "");
+      return digits === "" ? null : Number(digits) / 100;
+    },
+    fromValue: (n) => (n === null || n === undefined || n === "" ? "" : String(Math.round(Number(n) * 100))),
+  },
+};
+
 // ---------- configuração de cada entidade ----------
 // `columns`  -> como cada campo aparece na tabela de listagem
 // `fields`   -> como cada campo aparece no formulário de criar/editar
@@ -17,6 +86,8 @@ const ENTITIES = {
     gender: "m",
     endpoint: "/idiomas",
     pk: "id",
+    icon: ICONS.idiomas,
+    accent: "green",
     description: "Idiomas oferecidos pela escola.",
     optionLabel: (r) => r.nome,
     columns: [
@@ -36,6 +107,8 @@ const ENTITIES = {
     gender: "m",
     endpoint: "/cursos",
     pk: "id",
+    icon: ICONS.cursos,
+    accent: "mustard",
     description: "Cursos vinculados a um idioma, com nível e carga horária.",
     optionLabel: (r) => `${r.nome} (nível ${r.nivel})`,
     columns: [
@@ -51,7 +124,7 @@ const ENTITIES = {
       { name: "nome", label: "Nome do curso", type: "text", required: true, placeholder: "Inglês Básico" },
       { name: "nivel", label: "Nível", type: "number", required: true, placeholder: "1" },
       { name: "carga_horario", label: "Carga horária (horas)", type: "number", required: true, placeholder: "60" },
-      { name: "valor_mensalidade", label: "Mensalidade (R$)", type: "number", step: "0.01", required: true, placeholder: "250.00" },
+      { name: "valor_mensalidade", label: "Mensalidade", type: "text", mask: "currency", required: true, placeholder: "R$ 0,00" },
     ],
   },
 
@@ -61,22 +134,24 @@ const ENTITIES = {
     gender: "m",
     endpoint: "/professores",
     pk: "id_professor",
+    icon: ICONS.professores,
+    accent: "brick",
     description: "Corpo docente responsável pelas turmas.",
     optionLabel: (r) => r.nome,
     columns: [
       { key: "id_professor", label: "ID", type: "id" },
       { key: "nome", label: "Nome" },
-      { key: "cpf", label: "CPF" },
+      { key: "cpf", label: "CPF", mask: "cpf" },
       { key: "email", label: "Email" },
-      { key: "telefone", label: "Telefone" },
+      { key: "telefone", label: "Telefone", mask: "telefone" },
       { key: "formacao", label: "Formação" },
       { key: "data_contratacao", label: "Contratação", type: "date" },
     ],
     fields: [
       { name: "nome", label: "Nome completo", type: "text", required: true },
-      { name: "cpf", label: "CPF (somente números)", type: "text", required: true, maxlength: 11, placeholder: "00000000000" },
+      { name: "cpf", label: "CPF", type: "text", mask: "cpf", required: true, placeholder: "000.000.000-00" },
       { name: "email", label: "Email", type: "email", required: false },
-      { name: "telefone", label: "Telefone", type: "text", required: false, placeholder: "(47) 90000-0000" },
+      { name: "telefone", label: "Telefone", type: "text", mask: "telefone", required: false, placeholder: "(47) 90000-0000" },
       { name: "formacao", label: "Formação", type: "text", required: false, placeholder: "Letras - Inglês" },
       { name: "data_contratacao", label: "Data de contratação", type: "date", required: true, defaultToday: true },
     ],
@@ -88,6 +163,8 @@ const ENTITIES = {
     gender: "f",
     endpoint: "/turmas",
     pk: "id_turma",
+    icon: ICONS.turmas,
+    accent: "green",
     description: "Turmas abertas, cada uma vinculada a um curso e a um professor.",
     optionLabel: (r) => r.nome,
     columns: [
@@ -117,23 +194,25 @@ const ENTITIES = {
     gender: "m",
     endpoint: "/alunos",
     pk: "id_aluno",
+    icon: ICONS.alunos,
+    accent: "mustard",
     description: "Alunos cadastrados na secretaria.",
     optionLabel: (r) => r.nome,
     columns: [
       { key: "id_aluno", label: "ID", type: "id" },
       { key: "nome", label: "Nome" },
-      { key: "cpf", label: "CPF" },
+      { key: "cpf", label: "CPF", mask: "cpf" },
       { key: "email", label: "Email" },
-      { key: "telefone", label: "Telefone" },
+      { key: "telefone", label: "Telefone", mask: "telefone" },
       { key: "data_nascimento", label: "Nascimento", type: "date" },
       { key: "data_cadastro", label: "Cadastro", type: "date" },
     ],
     fields: [
       { name: "nome", label: "Nome completo", type: "text", required: true },
-      { name: "cpf", label: "CPF (somente números)", type: "text", required: true, maxlength: 11, placeholder: "00000000000" },
+      { name: "cpf", label: "CPF", type: "text", mask: "cpf", required: true, placeholder: "000.000.000-00" },
       { name: "data_nascimento", label: "Data de nascimento", type: "date", required: true },
       { name: "email", label: "Email", type: "email", required: false },
-      { name: "telefone", label: "Telefone", type: "text", required: false, placeholder: "(47) 90000-0000" },
+      { name: "telefone", label: "Telefone", type: "text", mask: "telefone", required: false, placeholder: "(47) 90000-0000" },
       { name: "data_cadastro", label: "Data de cadastro", type: "date", required: true, defaultToday: true },
     ],
   },
@@ -144,6 +223,8 @@ const ENTITIES = {
     gender: "f",
     endpoint: "/matriculas",
     pk: "id_matricula",
+    icon: ICONS.matriculas,
+    accent: "brick",
     description: "Vínculo entre um aluno e uma turma.",
     optionLabel: (r) => `#${r.id_matricula}`,
     columns: [
@@ -165,23 +246,25 @@ const ENTITIES = {
     gender: "f",
     endpoint: "/escola",
     pk: "id_escola",
+    icon: ICONS.escola,
+    accent: "green",
     description: "Unidades da escola, cada uma vinculada a um curso.",
     optionLabel: (r) => r.nome,
     columns: [
       { key: "id_escola", label: "ID", type: "id" },
       { key: "id_curso", label: "Curso vinculado", type: "lookup", ref: "cursos" },
       { key: "nome", label: "Nome" },
-      { key: "cnpj", label: "CNPJ" },
+      { key: "cnpj", label: "CNPJ", mask: "cnpj" },
       { key: "endereco", label: "Endereço" },
-      { key: "telefone", label: "Telefone" },
+      { key: "telefone", label: "Telefone", mask: "telefone" },
       { key: "email", label: "Email" },
     ],
     fields: [
       { name: "id_curso", label: "Curso vinculado", type: "select", ref: "cursos", required: true },
       { name: "nome", label: "Nome da unidade", type: "text", required: true },
-      { name: "cnpj", label: "CNPJ (somente números)", type: "text", required: true, maxlength: 14 },
+      { name: "cnpj", label: "CNPJ", type: "text", mask: "cnpj", required: true, placeholder: "00.000.000/0000-00" },
       { name: "endereco", label: "Endereço", type: "text", required: false },
-      { name: "telefone", label: "Telefone", type: "text", required: false },
+      { name: "telefone", label: "Telefone", type: "text", mask: "telefone", required: false, placeholder: "(47) 90000-0000" },
       { name: "email", label: "Email", type: "email", required: false },
     ],
   },
@@ -205,6 +288,8 @@ const el = {
   connStatus: document.getElementById("conn-status"),
   title: document.getElementById("section-title"),
   sub: document.getElementById("section-sub"),
+  sectionIcon: document.getElementById("section-icon"),
+  sectionCount: document.getElementById("section-count"),
   btnNew: document.getElementById("btn-new"),
   errorBanner: document.getElementById("error-banner"),
   errorText: document.getElementById("error-text"),
@@ -300,10 +385,46 @@ function renderNav() {
     const li = document.createElement("li");
     const btn = document.createElement("button");
     btn.className = "nav-item" + (key === state.currentKey ? " active" : "");
-    btn.textContent = entity.label;
+    btn.dataset.key = key;
+
+    const main = document.createElement("span");
+    main.className = "nav-item-main";
+
+    const icon = document.createElement("span");
+    icon.className = "nav-icon accent-" + entity.accent;
+    icon.innerHTML = entity.icon;
+    icon.setAttribute("aria-hidden", "true");
+
+    const labelSpan = document.createElement("span");
+    labelSpan.textContent = entity.label;
+
+    main.appendChild(icon);
+    main.appendChild(labelSpan);
+
+    const count = document.createElement("span");
+    count.className = "count";
+
+    btn.appendChild(main);
+    btn.appendChild(count);
     btn.addEventListener("click", () => selectEntity(key));
     li.appendChild(btn);
     el.navList.appendChild(li);
+  });
+}
+
+function updateNavCount(key, count) {
+  const badge = el.navList.querySelector(`.nav-item[data-key="${key}"] .count`);
+  if (badge) badge.textContent = count === null || count === undefined ? "" : String(count);
+}
+
+function refreshNavCounts() {
+  ENTITY_ORDER.forEach(async (key) => {
+    try {
+      const data = await fetchList(key);
+      updateNavCount(key, data.length);
+    } catch (err) {
+      updateNavCount(key, null);
+    }
   });
 }
 
@@ -319,6 +440,9 @@ async function loadSection(key) {
   const entity = ENTITIES[key];
   el.title.textContent = entity.label;
   el.sub.textContent = entity.description;
+  el.sectionIcon.className = "header-icon accent-" + entity.accent;
+  el.sectionIcon.innerHTML = entity.icon;
+  el.sectionCount.hidden = true;
 
   el.errorBanner.hidden = true;
   el.emptyState.hidden = true;
@@ -331,6 +455,10 @@ async function loadSection(key) {
 
     state.records = records;
     renderTable(entity, records, refKeys);
+    updateNavCount(key, records.length);
+    el.sectionCount.className = "count-pill accent-" + entity.accent;
+    el.sectionCount.textContent = `${records.length} ${records.length === 1 ? "registro" : "registros"}`;
+    el.sectionCount.hidden = false;
   } catch (err) {
     el.loadingState.hidden = true;
     el.errorBanner.hidden = false;
@@ -390,6 +518,8 @@ function renderTable(entity, records, refKeys) {
       } else if (col.type === "lookup") {
         const refRecord = lookups[col.ref] && lookups[col.ref].get(raw);
         td.textContent = refRecord ? ENTITIES[col.ref].optionLabel(refRecord) : `#${raw}`;
+      } else if (col.mask && MASKS[col.mask]) {
+        td.textContent = raw === null || raw === undefined || raw === "" ? "—" : MASKS[col.mask].format(String(raw));
       } else {
         td.textContent = raw === null || raw === undefined || raw === "" ? "—" : raw;
       }
@@ -480,6 +610,17 @@ async function buildField(field, record) {
     if (field.step) input.step = field.step;
     if (field.maxlength) input.maxLength = field.maxlength;
     if (field.placeholder) input.placeholder = field.placeholder;
+
+    if (field.mask && MASKS[field.mask]) {
+      const mask = MASKS[field.mask];
+      input.type = "text";
+      input.inputMode = mask.inputMode || "text";
+      input.maxLength = mask.maxLength;
+      input.dataset.mask = field.mask;
+      input.addEventListener("input", () => {
+        input.value = mask.format(input.value);
+      });
+    }
   }
 
   input.id = "f_" + field.name;
@@ -487,7 +628,14 @@ async function buildField(field, record) {
   if (field.required) input.required = true;
 
   if (record && record[field.name] !== undefined && record[field.name] !== null) {
-    input.value = String(record[field.name]).split("T")[0];
+    const raw = record[field.name];
+    if (field.mask === "currency") {
+      input.value = MASKS.currency.format(MASKS.currency.fromValue(raw));
+    } else if (field.mask && MASKS[field.mask]) {
+      input.value = MASKS[field.mask].format(String(raw));
+    } else {
+      input.value = String(raw).split("T")[0];
+    }
   } else if (field.defaultToday) {
     input.value = todayISO();
   }
@@ -518,7 +666,10 @@ el.panelForm.addEventListener("submit", async (e) => {
 
   entity.fields.forEach((f) => {
     let value = formData.get(f.name);
-    if (f.type === "number") {
+    if (f.mask && MASKS[f.mask]) {
+      value = MASKS[f.mask].unmask(value || "");
+      if (value === "") value = null;
+    } else if (f.type === "number") {
       value = value === "" ? null : Number(value);
     } else if (value === "") {
       value = null;
@@ -548,6 +699,7 @@ el.panelForm.addEventListener("submit", async (e) => {
 
     closePanel();
     loadSection(state.currentKey);
+    refreshNavCounts();
   } catch (err) {
     el.panelError.hidden = false;
     el.panelError.textContent = err.message;
@@ -589,6 +741,7 @@ async function confirmDelete(entity, record) {
     Object.keys(listCache).forEach((k) => delete listCache[k]);
     showToast(actionMessage(entity, "delete"));
     loadSection(state.currentKey);
+    refreshNavCounts();
   } catch (err) {
     showToast(err.message, true);
   }
@@ -622,6 +775,7 @@ el.apiBaseInput.addEventListener("change", () => {
   Object.keys(listCache).forEach((k) => delete listCache[k]);
   updateConnStatusIdle();
   loadSection(state.currentKey);
+  refreshNavCounts();
 });
 
 // ---------- eventos gerais ----------
@@ -642,3 +796,4 @@ document.addEventListener("keydown", (e) => {
 el.apiBaseInput.value = state.apiBase;
 renderNav();
 loadSection(state.currentKey);
+refreshNavCounts();
