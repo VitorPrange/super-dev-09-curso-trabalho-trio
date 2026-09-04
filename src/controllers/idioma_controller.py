@@ -9,7 +9,12 @@ router = APIRouter()
 
 @router.get("/idiomas")
 def listar_idiomas():
-    return idioma_repository.consultar_todos()
+    try:
+        return idioma_repository.consultar_todos()
+    except Exception as e:
+        import sys
+        print(f"[ERROR] listar_idiomas: {type(e).__name__}: {e}", file=sys.stderr)
+        return {"error": f"{type(e).__name__}: {e}"}
 
 
 @router.post ("/idiomas")
@@ -28,7 +33,7 @@ def consultar_por_id(id: int):
     idioma = idioma_repository.consultar_por_id(id)
     if idioma is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Idioma não encotrado")
-    
+
     return idioma
 
 
@@ -37,6 +42,6 @@ def editar(id: int, idioma: IdiomaEditar):
     idioma_existente = idioma_repository.consultar_por_id(id)
     if idioma_existente is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Idioma não encontrado")
-    
+
     idioma_repository.editar(id, idioma)
     return {"status": "OK"}
