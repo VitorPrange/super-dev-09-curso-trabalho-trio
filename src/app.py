@@ -1,6 +1,7 @@
 import sys
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -23,6 +24,14 @@ app = FastAPI(
     title="Trabalho Trio",
     description="Escola de idiomas",
     version="0.1.0"
+)
+
+# Libera o acesso do frontend (roda em outra origem/porta) à API.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.include_router(idioma_controller.router)

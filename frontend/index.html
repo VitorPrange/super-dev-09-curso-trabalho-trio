@@ -1,65 +1,82 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Trabalho Trio - Escola de Idiomas</title>
-  <link rel="stylesheet" href="css/style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Escola de Idiomas · Secretaria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>🎓 Trabalho Trio</h1>
-    <p>Gerenciamento de Escola de Idiomas</p>
-  </header>
 
-  <nav class="breadcrumbs" id="breadcrumbs">
-    <span class="current">Início</span>
+<div class="app">
+
+  <nav class="sidebar" id="sidebar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">世</span>
+      <div>
+        <div class="brand-title">Escola de Idiomas</div>
+        <div class="brand-sub">Livro de matrícula</div>
+      </div>
+    </div>
+
+    <ul class="nav-list" id="nav-list"><!-- preenchido via JS --></ul>
+
+    <div class="sidebar-footer">
+      <label for="api-base">Endereço da API</label>
+      <input type="text" id="api-base" spellcheck="false" autocomplete="off">
+      <div class="conn-status" id="conn-status"></div>
+    </div>
   </nav>
 
-  <main class="container">
-    <div class="dashboard-grid">
-      <a href="idiomas.html" class="nav-card">
-        <span class="card-icon">🌐</span>
-        <span class="card-label">Idiomas</span>
-      </a>
+  <main class="content">
+    <header class="content-header">
+      <div>
+        <h1 id="section-title">—</h1>
+        <p class="section-sub" id="section-sub"></p>
+      </div>
+      <button class="btn btn-primary" id="btn-new">+ Novo registro</button>
+    </header>
 
-      <a href="cursos.html" class="nav-card">
-        <span class="card-icon">📚</span>
-        <span class="card-label">Cursos</span>
-      </a>
+    <div class="banner banner-error" id="error-banner" hidden>
+      <p id="error-text"></p>
+      <button class="btn btn-ghost" id="btn-retry">Tentar de novo</button>
+    </div>
 
-      <a href="turmas.html" class="nav-card">
-        <span class="card-icon">👥</span>
-        <span class="card-label">Turmas</span>
-      </a>
-
-      <a href="alunos.html" class="nav-card">
-        <span class="card-icon">🎓</span>
-        <span class="card-label">Alunos</span>
-      </a>
-
-      <a href="professores.html" class="nav-card">
-        <span class="card-icon">👨‍🏫</span>
-        <span class="card-label">Professores</span>
-      </a>
-
-      <a href="escolas.html" class="nav-card">
-        <span class="card-icon">🏫</span>
-        <span class="card-label">Escolas</span>
-      </a>
-
-      <a href="matriculas.html" class="nav-card">
-        <span class="card-icon">📝</span>
-        <span class="card-label">Matrículas</span>
-      </a>
+    <div class="table-wrap" id="table-wrap">
+      <table id="data-table">
+        <thead id="table-head"></thead>
+        <tbody id="table-body"></tbody>
+      </table>
+      <div class="empty-state" id="empty-state" hidden>
+        <p id="empty-text"></p>
+        <button class="btn btn-primary" id="btn-empty-new">Adicionar</button>
+      </div>
+      <div class="loading-state" id="loading-state">Carregando registros…</div>
     </div>
   </main>
+</div>
 
-  <footer>
-    <p>Trabalho Trio - Protótipo Frontend &middot; Escola de Idiomas</p>
-  </footer>
+<div class="overlay" id="overlay" hidden></div>
+<aside class="panel" id="panel" hidden>
+  <form id="panel-form">
+    <div class="panel-head">
+      <h2 id="panel-title">Novo registro</h2>
+      <button type="button" class="btn-close" id="btn-close" aria-label="Fechar">×</button>
+    </div>
+    <div class="panel-body" id="panel-fields"><!-- preenchido via JS --></div>
+    <div class="panel-foot">
+      <button type="button" class="btn btn-ghost" id="btn-cancel">Cancelar</button>
+      <button type="submit" class="btn btn-primary" id="btn-save">Salvar</button>
+    </div>
+    <p class="panel-error" id="panel-error" hidden></p>
+  </form>
+</aside>
 
-  <script src="js/api.js"></script>
-  <script src="js/app.js"></script>
+<div class="toast" id="toast" hidden></div>
+
+<script src="app.js"></script>
 </body>
 </html>

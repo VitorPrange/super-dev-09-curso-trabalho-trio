@@ -48,8 +48,8 @@ def consultar_por_id(id_turma: int) -> Optional[Turma]:
 
 
 def editar(id_turma: int, turma: TurmaEditar):
-    sql = "UPDATE turmas SET id_professor = %s, id_curso = %s, nome = %s, horario = %s, data_inicio = %s, data_fim = %s, vagas_totais = %s"
+    sql = "UPDATE turmas SET id_professor = %s, id_curso = %s, nome = %s, horario = %s, data_inicio = %s, data_fim = %s, vagas_totais = %s WHERE id_turma = %s"
     with conectar() as conexao:
         with conexao.cursor() as cursor:
-            cursor.execute(sql, (turma.id_professor, turma.id_curso, turma.nome, turma.horario, turma.data_inicio, turma.data_fim, turma.vagas_totais))
+            cursor.execute(sql, (turma.id_professor, turma.id_curso, turma.nome, turma.horario, turma.data_inicio, turma.data_fim, turma.vagas_totais, id_turma))
             conexao.commit()
